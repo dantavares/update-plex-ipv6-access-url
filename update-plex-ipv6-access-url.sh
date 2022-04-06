@@ -5,7 +5,7 @@
 # IPv6 address expansion (https://stackoverflow.com/a/50208987)
 # helper to convert hex to dec (portable version)
 
-# Edit lines below to config this iscript. This script version is NOT based on arguments.
+# Edit lines below to config this script. This script version is NOT based on arguments.
 iface="eth0" 
 file="/var/lib/plexmediaserver/Library/Application Support/Plex Media Server/Preferences.xml"
 
