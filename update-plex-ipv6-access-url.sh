@@ -4,6 +4,12 @@
 
 # IPv6 address expansion (https://stackoverflow.com/a/50208987)
 # helper to convert hex to dec (portable version)
+
+# Edit lines below to config this iscript. This script version is NOT based on arguments.
+iface="eth0" 
+file="/var/lib/plexmediaserver/Library/Application Support/Plex Media Server/Preferences.xml"
+
+###########################################################################################################################################
 hex2dec(){
     [ "$1" != "" ] && printf "%d" "$(( 0x$1 ))"
 }
@@ -38,17 +44,17 @@ expand_ipv6() {
 }
 
 # Get IPv6 address of given interface (command adapted from: https://superuser.com/a/1057290)
-IPv6=`/sbin/ip -6 -o addr show dev "$1" scope global | grep inet6 | grep -v deprecated | grep -v temporary | awk -F '[ \t]+|/' '{print $4}'`
+IPv6=`/sbin/ip -6 -o addr show dev "$iface" scope global | grep inet6 | grep -v deprecated | grep -v temporary | awk -F '[ \t]+|/' '{print $4}'`
 if [ -n "$IPv6" ]; then
 	echo "Got IPv6 address: $IPv6"
 	# Format IPv6 for Plex (replace : with -)
 	PlexFormatIPv6=`expand_ipv6 "$IPv6" | sed -e "s/:/-/g"`
-	if ! grep -q "customConnections\=\"https\:\/\/$PlexFormatIPv6" "$2" ; then
+	if ! grep -q "customConnections\=\"https\:\/\/$PlexFormatIPv6" "$file" ; then
 		echo "Current IPv6 does not match config, updating config"
 		# Replace old IPv6 with new one
-		sed -i -e "s/customConnections\=\"https\:\/\/[a-fA-F0-9\-]*/customConnections\=\"https:\/\/$PlexFormatIPv6/" "$2"
+		sed -i -e "s/customConnections\=\"https\:\/\/[a-fA-F0-9\-]*/customConnections\=\"https:\/\/$PlexFormatIPv6/" "$file"
 		# Restart Plex service, uncomment line for your server's os or add your own
-		# systemctl restart plexmediaserver # systemd Linux distributions (Ubuntu, Debian, ...)
+		systemctl restart plexmediaserver # systemd Linux distributions (Ubuntu, Debian, ...)
 		# synoservice --restart pkgctl-Plex\ Media\ Server # Synology DiskStations (details: https://tech.setepontos.com/2018/03/25/control-synology-dsm-services-via-terminal-ssh/)
 	else
 		echo "Current IPv6 matches config, exiting"
