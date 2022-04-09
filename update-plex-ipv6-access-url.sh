@@ -54,7 +54,7 @@ if [ -n "$IPv6" ]; then
 		# Replace old IPv6 with new one
 		sed -i -e "s/customConnections\=\"https\:\/\/[a-fA-F0-9\-]*/customConnections\=\"https:\/\/$PlexFormatIPv6/" "$file"
 		# Restart Plex service, uncomment line for your server's os or add your own
-		systemctl restart plexmediaserver # systemd Linux distributions (Ubuntu, Debian, ...)
+		# systemctl restart plexmediaserver # systemd Linux distributions (Ubuntu, Debian, ...)
 		# synoservice --restart pkgctl-Plex\ Media\ Server # Synology DiskStations (details: https://tech.setepontos.com/2018/03/25/control-synology-dsm-services-via-terminal-ssh/)
 	else
 		echo "Current IPv6 matches config, exiting"
