@@ -1,12 +1,8 @@
 #!/bin/bash
 # Retrieve host IPv6 address and update Plex custom access url accordingly
 # based on workaround posted by Pikey18 on the Plex subreddit: https://www.reddit.com/r/PleX/comments/b82opu/plex_remote_access_over_ipv6/
-
-# IPv6 address expansion (https://stackoverflow.com/a/50208987)
 # helper to convert hex to dec (portable version)
 
-# Edit lines below to config this script. This script version is NOT based on arguments.
-iface="eth0" 
 file="/var/lib/plexmediaserver/Library/Application Support/Plex Media Server/Preferences.xml"
 
 ###########################################################################################################################################
@@ -44,7 +40,7 @@ expand_ipv6() {
 }
 
 # Get IPv6 address of given interface (command adapted from: https://superuser.com/a/1057290)
-IPv6=`/sbin/ip -6 -o addr show dev "$iface" scope global | grep inet6 | grep -v deprecated | grep -v temporary | awk -F '[ \t]+|/' '{print $4}'`
+IPv6=`ip -6 addr show scope global dynamic mngtmpaddr up|egrep -o '([0-9a-f:]+:+)+[0-9a-f]+'`
 if [ -n "$IPv6" ]; then
 	echo "Got IPv6 address: $IPv6"
 	# Format IPv6 for Plex (replace : with -)
